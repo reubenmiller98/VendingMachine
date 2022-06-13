@@ -13,8 +13,6 @@ public class Item {
     private String type;
     public int numberSold;
 
-    FileReader fileReader = new FileReader();
-
     VendingMachine vendingMachine = new VendingMachine();
 
     public Item() {

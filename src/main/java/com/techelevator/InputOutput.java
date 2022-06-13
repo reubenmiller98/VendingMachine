@@ -3,6 +3,8 @@ package com.techelevator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class InputOutput {
@@ -17,103 +19,77 @@ public class InputOutput {
     Candy candy = new Candy();
     File log = new File("log.txt");
 
-    public InputOutput() {
+    public void inputOutput() {
+        vendingMachine.vendingMapBuilder(vendingMachine);
         Scanner userInput = new Scanner(System.in);
+        mainMenu.welcomeMessage();
+        mainMenu.mainMenu();
         String mainMenuSelection = userInput.nextLine();
-        FileReader fileReader = new FileReader();
-        Integer i;
-        for (i = Integer.parseInt(mainMenuSelection); i == 1; mainMenuSelection = userInput.nextLine()) {
-            if (i == 1) {
-                mainMenu.displayVendingMachineItems();
+        while (!mainMenuSelection.equals("3")) {
+            if (mainMenuSelection.equals("1")) {
+                mainMenu.buildItemsList(vendingMachine);
+                System.out.println();
                 mainMenu.mainMenu();
+                mainMenuSelection = userInput.nextLine();
             }
-            if (i == 2) {
-                mainMenu.goToPurchaseMenu();
+            if (mainMenuSelection.equals("2")) {
+                purchaseMenu.purchaseMenu(money);
                 String purchaseMenuSelection = userInput.nextLine();
-                Integer ix;
-                for (ix = Integer.parseInt(purchaseMenuSelection); ix != 3; purchaseMenuSelection = userInput.nextLine()) {
-                    if (ix == 1) {
-                        purchaseMenu.feedMoney();
-                        try (PrintWriter logWriter = new PrintWriter(new FileWriter(log, true))) {
-                            String billSelection = userInput.nextLine();
-                            Double billSelectionAsDouble = Double.parseDouble(billSelection);
-                            if (billSelection.equals("1")) {
-                                money.insert1();
-                                logWriter.println("FEED MONEY: $" + billSelectionAsDouble + " $" + money.currentBalance);
-                                purchaseMenu.purchaseMenu();
-                            }
-                            if (billSelection.equals("5")) {
-                                money.insert5();
-                                logWriter.println("FEED MONEY: $" + billSelectionAsDouble + " $" + money.currentBalance);
-                                purchaseMenu.purchaseMenu();
-                            }
-                            if (billSelection.equals("10")) {
-                                money.insert10();
-                                logWriter.println("FEED MONEY: $" + billSelectionAsDouble + " $" + money.currentBalance);
-                                purchaseMenu.purchaseMenu();
-                            }
-                        } catch (Exception e) {
-                            System.exit(0);
-                        }
+                while (!purchaseMenuSelection.equals("3")) {
+                    if (purchaseMenuSelection.equals("1")) {
+                        purchaseMenu.feedMoneyMessage();
+                        purchaseMenu.billSelection = userInput.nextLine();
+                        purchaseMenu.feedMoney(money);
+                        purchaseMenu.purchaseMenu(money);
+                        purchaseMenuSelection = userInput.nextLine();
                     }
-                    if (ix == 2) {
-                        mainMenu.displayVendingMachineItems();
-                        System.out.println();
+                    if (purchaseMenuSelection.equals("2")) {
+                        mainMenu.buildItemsList(vendingMachine);
                         System.out.println("Please enter item ID (e.g. A1): ");
-                        String itemSelection = userInput.nextLine();
-                        if (vendingMachine.vendingPriceMap.containsKey(itemSelection)) {
-                            if (money.getCurrentBalance() >= vendingMachine.vendingPriceMap.get(itemSelection) && vendingMachine.vendingItemQtyMap.get(itemSelection) > 0) {
-                                double itemPrice = vendingMachine.vendingPriceMap.get(itemSelection);
-                                money.currentBalance -= itemPrice;
-                                int itemQty = vendingMachine.vendingItemQtyMap.get(itemSelection);
-                                vendingMachine.vendingItemQtyMap.put(itemSelection, itemQty -= 1);
-                                String itemName = vendingMachine.vendingNameMap.get(itemSelection);
-                                if (vendingMachine.vendingTypeMap.get(itemSelection).equals("Chip")) {
-                                    chip.chipMessage();
-                                    purchaseMenu.purchaseMenu();
-                                }
-                                if (vendingMachine.vendingTypeMap.get(itemSelection).equals("Candy")) {
-                                    candy.candyMessage();
-                                    purchaseMenu.purchaseMenu();
-                                }
-                                if (vendingMachine.vendingTypeMap.get(itemSelection).equals("Drink")) {
-                                    drink.drinkMessage();
-                                    purchaseMenu.purchaseMenu();
-                                }
-                                if (vendingMachine.vendingTypeMap.get(itemSelection).equals("Gum")) {
-                                    gum.gumMessage();
-                                    purchaseMenu.purchaseMenu();
-                                }
-
-                            } else if (money.currentBalance < vendingMachine.vendingPriceMap.get(itemSelection)) {
-                                System.out.println();
-                                System.out.println("Insufficient funds, please insert more money");
-                                System.out.println();
-                                purchaseMenu.purchaseMenu();
-                            } else if (vendingMachine.vendingItemQtyMap.get(itemSelection) == 0) {
-                                System.out.println();
-                                System.out.println("Product sold out, please select another item");
-                                System.out.println();
-                                purchaseMenu.purchaseMenu();
+                        purchaseMenu.itemSelection = userInput.nextLine();
+                        purchaseMenu.selectProduct(vendingMachine, money, candy, drink, gum, chip);
+                        purchaseMenu.purchaseMenu(money);
+                        purchaseMenuSelection = userInput.nextLine();
+                    }
+                }
+                if (purchaseMenuSelection.equals("3")) {
+                    money.calculateMoneyAsCurrency(money);
+                    System.out.print("Your change is: $" + money.currentBalance);
+                    if (money.getQuarters(money) > 0) {
+                        System.out.print(" (" + money.getQuarters(money) + " quarters");
+                        if (money.getDimes(money) > 0) {
+                            System.out.print(", " + money.getDimes(money) + " dimes");
+                            if (money.getNickels(money) > 0) {
+                                System.out.print(", " + money.getNickels(money) + " nickel");
                             }
-
-
                         }
-                        System.out.println("Please enter a valid item ID");
-                        System.out.println();
-                        purchaseMenu.purchaseMenu();
-
+                        System.out.print(")");
+                    } else if (money.getDimes(money) > 0) {
+                        System.out.print(" (" + money.getDimes(money) + " dimes");
+                        if (money.getNickels(money) > 0) {
+                            System.out.print(", " + money.getNickels(money) + " nickel");
+                        }
+                        System.out.print(")");
+                    } else if (money.getNickels(money) > 0) {
+                        System.out.println("(" + money.getNickels(money) + " nickel)");
                     }
-                    if (ix == 3) {
+                    money.giveChange(money);
+                    System.out.println();
+                    System.out.println("Returning to Main Menu!");
+                    System.out.println();
+                    mainMenu.mainMenu();
+                    mainMenuSelection = userInput.nextLine();
 
-                    }
                 }
             }
         }
-
-    }
-
-
+        if (mainMenuSelection.equals("3")) {
+            System.out.println("Thank you for using Wooben Vending International LLC (a subsidiary of Tech Elevator (!NO RIGHTS RESERVED))");
+            System.exit(3);
+        }
 }
+}
+
+
 
 

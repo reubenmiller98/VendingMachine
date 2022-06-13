@@ -4,92 +4,94 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Money {
-    private double quarters = 0;
-    private double dimes = 0;
-    private double nickels = 0;
+    private int quarters = 0;
+    private int dimes = 0;
+    private int nickels = 0;
     private double moneyAsCurrency;
     public double currentBalance = 0.0;
 
-    public Money() {
-        currentBalance = this.currentBalance;
+    public double insert1(Money money) {
+        money.currentBalance++;
+        return money.currentBalance;
     }
 
-    public double insert1() {
-        currentBalance++;
-        return currentBalance;
+    public double insert5(Money money) {
+        money.currentBalance += 5;
+        return money.currentBalance;
     }
 
-    public double insert5() {
-        currentBalance += 5;
-        return currentBalance;
+    public double insert10(Money money) {
+        money.currentBalance += 10;
+        return money.currentBalance;
     }
 
-    public double insert10() {
-        currentBalance += 10;
-        return currentBalance;
+    public int getQuarters(Money money) {
+        return money.quarters;
     }
 
-    public double getQuarters() {
-        return quarters;
+    public int getDimes(Money money) {
+        return money.dimes;
     }
 
-    public double getDimes() {
-        return dimes;
-    }
-
-    public double getNickels() {
-        return nickels;
+    public int getNickels(Money money) {
+        return money.nickels;
     }
 
     public double getMoneyAsCurrency() {
         return moneyAsCurrency;
     }
 
-    public double getCurrentBalance() {
-        return currentBalance;
+    public double getCurrentBalance(Money money) {
+        return money.currentBalance;
     }
 
-    public Map<String, Double> getChangeMap() {
+    public Map<String, Integer> getChangeMap() {
         return changeMap;
     }
 
 
 
-    Map <String, Double> changeMap = new HashMap<>();
+    Map <String, Integer> changeMap = new HashMap<>();
 
-    Map <String, Double> calculateMoneyAsCurrency() {
-        moneyAsCurrency = currentBalance;
-        for (double i = moneyAsCurrency; i >= 0.25; quarters++) {
-            moneyAsCurrency -= 0.25;
+    Map <String, Integer> calculateMoneyAsCurrency(Money money) {
+        money.moneyAsCurrency = money.currentBalance;
+        while (money.moneyAsCurrency >= 0.25) {
+            money.moneyAsCurrency -= 0.25;
+            money.quarters++;
         }
-        changeMap.put("Quarters: ", quarters);
-        for (double i = moneyAsCurrency; i >= 0.10; dimes++) {
-            moneyAsCurrency -= 0.10;
+        money.changeMap.put("Quarters: ", money.quarters);
+        while (money.moneyAsCurrency >= 0.10) {
+            money.moneyAsCurrency -= 0.10;
+            money.dimes++;
         }
-        changeMap.put("Dimes: ", dimes);
-        for (double i = moneyAsCurrency; i >= 0.05; nickels++) {
-            moneyAsCurrency -= 0.05;
+        money.changeMap.put("Dimes: ", money.dimes);
+        while (money.moneyAsCurrency >= 0.05) {
+            money.moneyAsCurrency -= 0.05;
+            money.nickels++;
         }
-        changeMap.put("Nickels: ", nickels);
-        return changeMap;
+        money.changeMap.put("Nickels: ", money.nickels);
+        return money.changeMap;
     }
 
-    Map <String, Double> giveChange() {
-        moneyAsCurrency = currentBalance;
-        for (double i = moneyAsCurrency; i >= 0.25; quarters--) {
-            moneyAsCurrency -= 0.25;
+    Map <String, Integer> giveChange(Money money) {
+        money.moneyAsCurrency = money.currentBalance;
+        while (money.moneyAsCurrency >= 0.25) {
+            money.moneyAsCurrency -= 0.25;
+            money.quarters--;
         }
-        changeMap.put("Quarters: ", quarters);
-        for (double i = moneyAsCurrency; i >= 0.10; dimes--) {
-            moneyAsCurrency -= 0.10;
+        money.changeMap.put("Quarters: ", money.quarters);
+        while (money.moneyAsCurrency >= 0.10) {
+            money.moneyAsCurrency -= 0.10;
+            money.dimes--;
         }
-        changeMap.put("Dimes: ", dimes);
-        for (double i = moneyAsCurrency; i >= 0.05; nickels--) {
-            moneyAsCurrency -= 0.05;
+        money.changeMap.put("Dimes: ", money.dimes);
+        while (money.moneyAsCurrency >= 0.05) {
+            money.moneyAsCurrency -= 0.05;
+            money.nickels--;
         }
-        changeMap.put("Nickels: ", nickels);
-        currentBalance = 0.0;
-        return changeMap;
+        money.changeMap.put("Nickels: ", nickels);
+        money.currentBalance = 0.0;
+        return money.changeMap;
     }
 
 }
