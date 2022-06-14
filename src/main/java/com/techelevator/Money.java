@@ -1,7 +1,12 @@
 package com.techelevator;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.math.RoundingMode;
+
+
+
 
 public class Money {
     private int quarters = 0;
@@ -9,19 +14,24 @@ public class Money {
     private int nickels = 0;
     private double moneyAsCurrency;
     public double currentBalance = 0.0;
+    public double billSelectionAsDouble = 0.0;
+
 
     public double insert1(Money money) {
         money.currentBalance++;
+        money.billSelectionAsDouble = 1.0;
         return money.currentBalance;
     }
 
     public double insert5(Money money) {
         money.currentBalance += 5;
+        money.billSelectionAsDouble = 5.0;
         return money.currentBalance;
     }
 
     public double insert10(Money money) {
         money.currentBalance += 10;
+        money.billSelectionAsDouble = 10.0;
         return money.currentBalance;
     }
 

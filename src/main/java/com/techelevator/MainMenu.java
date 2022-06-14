@@ -14,7 +14,7 @@ public class MainMenu {
         System.out.println();
     }
 
-    public void mainMenu() {
+    public void mainMenu(Money money) {
         System.out.println("(1) Display Vending Machine Items");
         System.out.println("(2) Purchase");
         System.out.println("(3) Exit");
